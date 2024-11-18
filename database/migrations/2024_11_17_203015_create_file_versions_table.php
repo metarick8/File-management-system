@@ -13,8 +13,10 @@ return new class extends Migration
     {
         Schema::create('file_versions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('fileInfoId')->references('id')->on('file_infos');
-            $table->foreignId('editorId')->references('id')->on('users');
+            $table->unsignedBigInteger('editorId');
+            $table->unsignedBigInteger('fileInfoId');
+            $table->foreign('editorId')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('fileInfoId')->references('id')->on('file_infos')->onDelete('cascade');
             $table->timestamps();
         });
     }

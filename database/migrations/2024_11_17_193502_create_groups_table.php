@@ -15,8 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->smallInteger('memberCount');
-            $table->foreignId('ownerId')->references('id')->on('users');
+            $table->unsignedBigInteger('ownerId');
             $table->string('randomString');
+            $table->foreign('ownerId')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

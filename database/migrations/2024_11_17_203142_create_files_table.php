@@ -13,7 +13,9 @@ return new class extends Migration
     {
         Schema::create('files', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('versionId');
             //$table->file('file');
+            $table->foreign('versionId')->references('id')->on('file_versions')->onDelete('cascade');
             $table->timestamps();
         });
     }

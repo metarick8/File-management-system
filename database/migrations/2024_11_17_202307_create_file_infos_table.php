@@ -13,11 +13,13 @@ return new class extends Migration
     {
         Schema::create('file_infos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('ownerId')->references('id')->on('users');
-            $table->foreignId('groupId')->references('id')->on('groups');
+            $table->unsignedBigInteger('ownerId');
+            $table->unsignedBigInteger('groupId');
             $table->string('name');
             $table->string('extension');
             $table->enum('status', ['available', 'underUse']);
+            $table->foreign('ownerId')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('groupId')->references('id')->on('groups')->onDelete('cascade');
             $table->timestamps();
         });
     }

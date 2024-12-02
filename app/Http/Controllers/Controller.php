@@ -9,4 +9,12 @@ use Illuminate\Routing\Controller as BaseController;
 class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
+    public function failedResponse($data = '', $message = '', $code = 400 )
+    {
+        return [
+            "data" => $data,
+            "message" => $message,
+            "code request" => $code
+        ];
+    }
 }

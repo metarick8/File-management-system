@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Group extends Model
 {
@@ -11,9 +12,12 @@ class Group extends Model
 
     protected $fillable = [
         'name',
-        'memberCount',
+        'description',
         'ownerId',
         'randomString'
+    ];
+    protected $appends = [
+        'totalMembers'
     ];
 
     public function user()
@@ -28,5 +32,12 @@ class Group extends Model
     {
         return $this->hasMany(FileInfo::class, 'groupId', 'id');
     }
+    public function gettotalMembersAttribute()
+    {
 
+        $totalMembers = DB::table("members")->where("groupId", $this->id)->count();
+        if ($totalMembers != null)
+            return DB::table("members")->where("groupId", $this->id)->count();
+        return 0;
+    }
 }

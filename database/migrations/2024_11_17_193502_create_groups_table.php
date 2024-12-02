@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('groups', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->smallInteger('memberCount');
+            $table->string('description');
             $table->unsignedBigInteger('ownerId');
             $table->string('randomString');
             $table->foreign('ownerId')->references('id')->on('users')->onDelete('cascade');

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -50,6 +51,6 @@ class User extends Authenticatable implements JWTSubject
     }
     public function members()
     {
-        return $this->belongsToMany(Group::class, 'members', 'userId');
+        return $this->belongsToMany(Group::class, 'members', 'userId', 'groupId');
     }
 }

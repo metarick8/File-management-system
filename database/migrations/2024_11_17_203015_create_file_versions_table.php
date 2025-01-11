@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('editorId');
             $table->unsignedBigInteger('fileInfoId');
+            $table->string('path')->nullable();
             $table->foreign('editorId')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('fileInfoId')->references('id')->on('file_infos')->onDelete('cascade');
             $table->timestamps();

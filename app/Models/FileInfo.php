@@ -4,19 +4,21 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Mockery\Undefined;
 use PHPUnit\Framework\Attributes\Group;
 
 class FileInfo extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'ownerId',
-        'groupId',
-        'name',
-        'extension',
-        'status'
-    ];
+    // protected $fillable = [
+    //     'ownerId',
+    //     'groupId',
+    //     'name',
+    //     'extension',
+    //     'status'
+    // ];
+    protected $guarded = [];
 
     public function user()
     {
@@ -30,5 +32,16 @@ class FileInfo extends Model
     {
         return $this->hasMany(FileVersion::class, 'fileInfoId', 'id');
     }
-
+    public function scopeFilter($query, array $filters)
+    {
+        $query->when(
+            $filters['accepted'] ?? false,
+            fn($query, $accepted) =>
+            $query->where('accepted', $accepted)
+        );
+    }
+    public function getPathAttribute($value)
+    {
+        return $this->name . '.' . $this->extension;
+    }
 }

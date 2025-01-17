@@ -9,10 +9,7 @@ class FileVersion extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'editorId',
-        'fileInfoId'
-    ];
+    protected $guarded = [];
 
     public function user()
     {

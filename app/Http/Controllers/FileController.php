@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\FileCheckInRequest;
 use App\Http\Requests\FileInfoRequest;
 use App\Http\Requests\FileRequest;
 use App\Models\FileInfo;
@@ -17,14 +18,19 @@ class FileController extends Controller
     {
         return $fileService->store($request);
     }
-    public function index(Group $group)
+    public function index(Group $group, FileService $fileService)
     {
-        $files = null;
-        if (auth()->user()->id === $group->ownerId)
-            $files = FileInfo::filter(request(['accepted']))->where('groupId', $group->id)->get();
-        else
-            $files = FileInfo::filter(['accepted' => 1])->where('groupId', $group->id)->get();
-
-        return $files;
+        return $fileService->index($group);
+    }
+    public function checkin(FileCheckInRequest $request, FileService $fileService)
+    {
+        return $fileService->reserve($request['files']);
+    }
+    public function accept(FileInfo $file, FileService $fileService)
+    {
+        $this->authorize('accept', $file);
+        if ($file->accepted)
+            return response()->json(['message' => "File already accepted"], 422);
+        return $fileService->accept($file);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\User;
+use App\Rules\GroupOfUser;
 use Illuminate\Foundation\Http\FormRequest;
 
 class FileInfoRequest extends FormRequest
@@ -12,12 +13,7 @@ class FileInfoRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        $user = User::firstWhere('id', auth()->user()->id);
-        $isMember = false;
-        if ($this->has('groupId')) {
-            $isMember = $user->members()->where('groupId', $this->groupId)->exists();
-        }
-        return $isMember;
+        return true;
     }
 
     /**
@@ -28,10 +24,8 @@ class FileInfoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // 'ownerId' => 'required|exists:users,id',
-            'groupId' => 'required',
+            'groupId' => ['required', new GroupOfUser()],
             'name' => 'required',
-            // 'extension' => 'required',
             'file' => 'required|file',
         ];
     }

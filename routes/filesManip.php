@@ -4,16 +4,17 @@ use App\Http\Controllers\FileController;
 use Illuminate\Support\Facades\Route;
 
 
-//don't forget authorization here:
-Route::get('groups/{group:id}/files', [FileController::class, 'index'])->middleware('auth');
+Route::get('groups/{group:id}/files', [FileController::class, 'index'])->middleware(['auth', 'checkGroupMembership']);
 
 
 
-Route::prefix('files')->group(function () {
+Route::prefix('files')->middleware('auth')->group(function () {
 
-    Route::post('store', [FileController::class, 'store'])->middleware('auth');
-    //show only not accepted files for a group admin
 
+    Route::post('store', [FileController::class, 'store']);
+    Route::post('check-in', [FileController::class, 'checkin'])->middleware('setTransactionIsolation');
+    // Route::post('check-out', [FileController::class, 'checkout']);
+    Route::post('/{file:id}/accept', [FileController::class, 'accept']);
 });
 
 

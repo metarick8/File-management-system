@@ -40,8 +40,8 @@ class FileInfo extends Model
             $query->where('accepted', $accepted)
         );
     }
-    public function getPathAttribute($value)
-    {
-        return $this->name . '.' . $this->extension;
-    }
+    // public function getPathAttribute($value)
+    // {
+    //     return $this->name . '.' . $this->extension;
+    // }
 }

@@ -53,4 +53,8 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->belongsToMany(Group::class, 'members', 'userId', 'groupId');
     }
+    public function edited_files()
+    {
+        return  $this->belongsToMany(FileInfo::class, 'file_versions', 'editorId', 'fileInfoId')->withTimestamps();
+    }
 }

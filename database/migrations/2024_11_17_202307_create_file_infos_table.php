@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('extension');
             $table->boolean('accepted')->default(false);
+            $table->boolean('isFree')->default(true);
             // $table->enum('status', ['available', 'underUse']);
             $table->string('path');
             $table->foreign('ownerId')->references('id')->on('users')->onDelete('cascade');

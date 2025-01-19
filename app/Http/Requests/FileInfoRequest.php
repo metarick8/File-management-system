@@ -24,7 +24,7 @@ class FileInfoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'groupId' => ['required', new GroupOfUser()],
+            'groupId' => 'required',
             'name' => 'required',
             'file' => 'required|file',
         ];

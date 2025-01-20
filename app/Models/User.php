@@ -21,6 +21,8 @@ class User extends Authenticatable implements JWTSubject
     protected $hidden = [
         'password',
         'remember_token',
+        'created_at',
+        'updated_at'
     ];
 
     protected $casts = [
@@ -40,6 +42,10 @@ class User extends Authenticatable implements JWTSubject
     public function groups()
     {
         return $this->hasMany(Group::class, 'ownerId', 'id');
+    }
+    public function invitations()
+    {
+        return $this->belongsToMany(Group::class, 'invitations', 'userId', 'groupId');
     }
     public function file_infos()
     {

@@ -23,7 +23,8 @@ class GroupController extends Controller
     {
         $group = $this->groupService->createGroup($request->only([
             'name',
-            'description'
+            'description',
+            'users'
         ]));
 
         //return $group;
@@ -37,12 +38,23 @@ class GroupController extends Controller
         return $this->success($group, "Group created Successfully", 201);
     }
 
-    public function showGroupsForUser()
+    public function listGroupsForUser()
     {
         $groups = $this->groupService->getGroupsForUser();
+        if (empty($groups))
+            return $this->success('', "You haven't join any group yet");
         return $this->success([
             "groups" => $groups
         ], 'Groups for this user');
+    }
+
+    public function show(int $id)
+    {
+        $group = $this->groupService->get($id);
+        if (empty($group))
+            return $this->success('', "Group not found!");
+        else
+            return $this->success($group, "Group details:");
     }
 
 }

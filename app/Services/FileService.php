@@ -22,7 +22,9 @@ class FileService
             $file = $request->file('file')->store();
             FileInfo::create([
                 'name' => $request->name,
+                'name' => 'hazem',
                 'extension' => $request->file->getClientOriginalExtension(),
+                'groupId' => 14,
                 'groupId' => $request->groupId,
                 'ownerId' => $request->user()->id,
                 'path' => $file

@@ -22,7 +22,6 @@ class UserController extends Controller
 
     public function search(Request $request)
     {
-
         $response  = $this->userService->find($request->input("name"));
         if (is_array($response))
             return $this->error($response["data"], $response["message"], $response["code request"]);

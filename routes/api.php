@@ -14,10 +14,19 @@ Route::controller(AuthController::class)->group(function () {
     Route::get('logout', 'logout');
     Route::get('refresh', 'refresh');
 });
-//Route::middleware('auth:api')->group(function () {
-Route::post('group/create', [GroupController::class, 'create']);
-Route::get('group/list', [GroupController::class, 'showGroupsForUser']);
-Route::post('group/invite', [InvitationController::class, 'sendInvite']);
-Route::post('group/acceptInvite', [InvitationController::class, 'invitationResponse']);
+
+Route::prefix('group')->group(function () {
+    Route::post('create', [GroupController::class, 'create']);
+    Route::get('list', [GroupController::class, 'listGroupsForUser']);
+    Route::get('{id}', [GroupController::class, "show"]);
+});
+
+Route::prefix('invite')->group(function () {
+    Route::post('send', [InvitationController::class, 'sendInvite']);
+    Route::post('accept', [InvitationController::class, 'invitationResponse']);
+    Route::get('show', [InvitationController::class, "show"]);
+});
+
 Route::post('user/search', [UserController::class, "search"]);
-///});
+
+

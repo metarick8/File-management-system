@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\CheckoutFileRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class FileCheckOutRequest extends FormRequest
@@ -11,7 +12,7 @@ class FileCheckOutRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +23,8 @@ class FileCheckOutRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'file' => 'required|file',
+            'fileInfoId' => 'required',
         ];
     }
 }

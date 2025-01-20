@@ -2,11 +2,14 @@
 
 namespace App\Services;
 
+use App\Http\Requests\FileCheckOutRequest;
 use App\Http\Requests\FileInfoRequest;
 use App\Http\Requests\FileRequest;
 use App\Models\FileInfo;
+use App\Models\FileVersion;
 use App\Models\Group;
 use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Throwable;
@@ -30,12 +33,14 @@ class FileService
                 'path' => $file
             ]);
             DB::commit();
-            return response()->json(['message' => 'File uploaded successfully!']);
+            return response()->json(['message' => 'File uploaded successfully!'], 200);
         } catch (Throwable $th) {
             DB::rollBack();
+
+            //to prevent orphaned files
             if ($file && Storage::disk('local')->exists($file))
                 Storage::disk('local')->delete($file);
-            return response()->json(['message' => $th->getMessage()]);
+            return response()->json(['message' => $th->getMessage()], 500);
         }
     }
     public function index(Group $group)
@@ -45,16 +50,11 @@ class FileService
             $files = FileInfo::filter(request(['accepted']))->where('groupId', $group->id)->get();
         else
             $files = FileInfo::filter(['accepted' => 1])->where('groupId', $group->id)->get();
-
-        return $files;
+        return response()->json(['data' => $files]);
     }
     public function accept($file)
     {
-        if (FileInfo::where('groupId', $file->groupId)->where('name', $file->name)
-            ->where('extension', $file->extension)->where('accepted', 1)->exists()
-        ) {
-            return response()->json(['message' => 'File cannot be accepted because of naming collision'], 422);
-        }
+
         DB::beginTransaction();
         try {
             $file->update(['accepted' => true]);
@@ -62,20 +62,50 @@ class FileService
             return response()->json(['message' => 'File accepted successfully'], 200);
         } catch (Throwable $th) {
             DB::rollback();
-            return response()->json(['message' => $th->getMessage()]);
+            return response()->json(['message' => $th->getMessage()], 500);
         }
     }
     public function reserve($files)
     {
         DB::beginTransaction();
         try {
-            auth()->user()->edited_files()->sync($files);
+            //this step is primarily added to avoid race condition!
+            FileInfo::whereIn('id', $files)->update(['isFree' => 0]);
+            auth()->user()->edited_files()->attach($files);
             DB::commit();
+            return response()->json(['message' => 'Reserved successfully'], 200);
         } catch (Throwable $th) {
 
             DB::rollback();
-            return response()->json(['error' => $th->getMessage()]);
+            return response()->json(['message' => $th->getMessage()], 500);
         }
     }
-    public function release() {}
+    public function release($request, FileInfo $file)
+    {
+        DB::beginTransaction();
+        $stored_file = null;
+        try {
+            $name = pathinfo($request->file('file')->getClientOriginalName(), PATHINFO_FILENAME);
+            $extension = $request->file('file')->getClientOriginalExtension();
+            // $fullname = $request->file('file')->getClientOriginalName();
+
+            if ($name . '.' . $extension !== $file->name . '.' . $file->extension)
+                return response()->json(['message' => "uploaded file name or extension doesn't match original file name or extension"], 422);
+
+            $file_version = FileVersion::where('fileInfoId', $request->fileInfoId)->where('path', null)->first();
+            $stored_file = $request->file('file')->store();
+            $file_version->update(['path' => $stored_file]);
+            $file->update(['isFree' => 1]);
+
+            DB::commit();
+            return response()->json(['message' => 'File Updated successfully'], 200);
+        } catch (Throwable $th) {
+            DB::rollback();
+
+            //to prevent orphaned files
+            if ($stored_file && Storage::disk('local')->exists($stored_file))
+                Storage::disk('local')->delete($file);
+            return response()->json(['message' => $th->getMessage(), 500]);
+        }
+    }
 }

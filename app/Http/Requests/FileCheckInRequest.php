@@ -25,7 +25,7 @@ class FileCheckInRequest extends FormRequest
     {
         return [
             'files' => 'required|array',
-            'files.*' => ['required', 'integer', 'distinct', new FileInUserGroup(), new FileIsFree()],
+            'files.*' => ['required', 'integer', 'distinct'],
             //solve race conditions.. I believed it's solved now
             //put status field in file_infos table
         ];

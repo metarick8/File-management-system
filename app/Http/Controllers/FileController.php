@@ -2,39 +2,22 @@
 
 namespace App\Http\Controllers;
 
-<<<<<<< HEAD
-=======
 use App\Http\Requests\FileCheckInRequest;
 use App\Http\Requests\FileCheckOutRequest;
 use App\Http\Requests\FileInfoRequest;
 use App\Http\Requests\FileRequest;
 use App\Models\FileInfo;
 use App\Models\Group;
->>>>>>> dccb72ac10b914b59fa2bab734e964cb49847532
 use App\Models\User;
-use App\Models\Group;
-use App\Models\FileInfo;
 use Illuminate\Http\Request;
-<<<<<<< HEAD
-use App\Services\FileService;
-use App\Http\Requests\FileRequest;
-use Illuminate\Support\Facades\Cache;
-use App\Http\Requests\FileInfoRequest;
-use App\Http\Requests\FileCheckInRequest;
-=======
 use Illuminate\Support\Facades\Gate;
->>>>>>> dccb72ac10b914b59fa2bab734e964cb49847532
 
 class FileController extends Controller
 {
 
     public function store(FileInfoRequest $request, FileService $fileService)
     {
-<<<<<<< HEAD
-        //Cache::lock("store", 5)->get();
-=======
         $this->authorize('create', FileInfo::class);
->>>>>>> dccb72ac10b914b59fa2bab734e964cb49847532
         return $fileService->store($request);
     }
     public function index(Group $group, FileService $fileService)

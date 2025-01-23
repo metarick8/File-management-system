@@ -28,7 +28,7 @@ class FileController extends Controller
 
     public function checkin(FileCheckInRequest $request, FileService $fileService)
     {
-        $this->authorize('checkin', FileInfo::class);
+
         return $fileService->reserve($request['files']);
     }
     public function checkout(FileCheckOutRequest $request, FileService $fileService)

@@ -16,7 +16,7 @@ class SetTransactionIsolation
      */
     public function handle(Request $request, Closure $next): Response
     {
-        DB::statement('SET TRANSACTION ISOLATION LEVEL REPEATABLE READ');
+        // DB::statement('SET TRANSACTION ISOLATION LEVEL REPEATABLE READ');
         return $next($request);
     }
 }

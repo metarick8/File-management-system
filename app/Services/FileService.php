@@ -11,6 +11,7 @@ use App\Models\Group;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Throwable;
 
@@ -65,7 +66,17 @@ class FileService
     }
     public function reserve($files)
     {
+        // DB::statement('SET TRANSACTION ISOLATION LEVEL REPEATABLE READ');
         DB::beginTransaction();
+        try {
+
+            Gate::authorize('checkin', FileInfo::class);
+        } catch (Throwable $th) {
+            DB::rollback();
+            return response()->json(['message' => $th->getMessage()], 403);
+        }
+
+        // sleep(10);
         try {
             //this step is primarily added to avoid race condition!
             FileInfo::whereIn('id', $files)->update(['isFree' => 0]);

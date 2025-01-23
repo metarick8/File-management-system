@@ -17,8 +17,6 @@ class InvitationService
     {
         $this->invitationRepository = $invitationRepository;
     }
-
-
     public function invite(array $data)
     {
         $validator = Validator::make($data, [
@@ -36,6 +34,7 @@ class InvitationService
 
         $groupId = $data["groupId"];
         $group = Group::find($groupId);
+
         if (empty($group))
             return [
                 "data" => $groupId,
@@ -48,6 +47,7 @@ class InvitationService
                 "message" => "The user is not admin of this group",
                 "code request" => 400
             ];
+
         foreach ($data["members"] as $memberId) {
             if (auth()->id() == $memberId)
                 return [
@@ -89,6 +89,7 @@ class InvitationService
                 "message" => $validator->errors()->first(),
                 "code request" => 400
             ];
+
         $invitationRow = DB::table("invitations")
             ->where("id", $data["id"])
             ->first();
@@ -105,5 +106,24 @@ class InvitationService
                 "code request" => 400
             ];
         $this->invitationRepository->accept($data["response"], $invitationRow->id, $invitationRow->groupId);
+    }
+
+    public function show()
+    {
+        //return $invitations = DB::table("invitations")->where([['userId', auth()->id()], ['status', "pending"]])->get();
+        $invitations = DB::table("invitations")
+            ->join("users", "users.id", "=", "invitations.userId")
+            ->join("groups", "groups.id", "=", "invitations.groupId")
+            ->select(
+                'invitations.id',
+                'users.name AS user',
+                'groups.name AS group',
+                'groups.id AS groupId'
+            )
+            ->where([['users.id', auth()->id()], ['invitations.status', "pending"]])
+            ->orderBy('invitations.created_at', 'desc')
+            ->get();
+
+        return $invitations;
     }
 }

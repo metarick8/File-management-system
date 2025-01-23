@@ -53,7 +53,6 @@ class FileService
     }
     public function accept($file)
     {
-
         DB::beginTransaction();
         try {
             $file->update(['accepted' => true]);
@@ -116,5 +115,29 @@ class FileService
                 Storage::disk('local')->delete($file);
             return response()->json(['message' => $th->getMessage(), 500]);
         }
+    }
+
+    public function notifications()
+    {
+        return FileInfo::where('accepted', 0)
+            ->whereIn('groupId', auth()->user()->groups()->pluck('id'))
+            ->with('group.user')
+            ->get()
+            ->map(function ($file) {
+                return [
+                    'id' => $file->id,
+                    'name' => $file->name,
+                    'accepted' => $file->accepted,
+                    'created_at' => $file->created_at,
+                    'owner' => $file->group->user->name ?? null,
+                    'group' => $file->group->name ?? null,
+                ];
+            });
+    }
+
+    public function show(int $id)
+    {
+        // working
+        return FileInfo::with("file_versions")->find($id);
     }
 }

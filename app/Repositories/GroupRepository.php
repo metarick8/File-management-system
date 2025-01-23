@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Group;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -27,6 +28,9 @@ class GroupRepository
 
     public function getGroups(int $id)
     {
+        //return $invitations = DB::table("invitations")->where([['userId', auth()->id()], ['status', "pending"]])->get();
+        return User::find($id)->members()->get();
+
         $members = DB::table("members")->where('userId', $id)->get();
         if ($members->isEmpty())
             return $members;
@@ -41,6 +45,25 @@ class GroupRepository
             "groupId" => $groupId,
             "created_at" => Carbon::now(),
 
+        ]);
+    }
+    public function get(int $id)
+    {
+        $group = Group::with(['user', 'members'])->find($id);
+
+        if (empty($group))
+            return null;
+
+        $group["owner"] = $group->user->name;
+        return $group->only([
+            'id',
+            'name',
+            'owner',
+            'description',
+            'randomString',
+            'created_at',
+            'updated_at',
+            "members"
         ]);
     }
 }

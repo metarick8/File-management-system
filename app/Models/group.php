@@ -28,13 +28,16 @@ class Group extends Model
     {
         return $this->belongsToMany(User::class, 'members', 'groupId', 'userId');
     }
+    public function invitations()
+    {
+        return $this->belongsToMany(User::class, 'invitations', 'groupId', 'userId');
+    }
     public function file_infos()
     {
         return $this->hasMany(FileInfo::class, 'groupId', 'id');
     }
     public function gettotalMembersAttribute()
     {
-
         $totalMembers = DB::table("members")->where("groupId", $this->id)->count();
         if ($totalMembers != null)
             return DB::table("members")->where("groupId", $this->id)->count();

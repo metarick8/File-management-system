@@ -8,10 +8,7 @@ use App\Http\Requests\FileInfoRequest;
 use App\Http\Requests\FileRequest;
 use App\Models\FileInfo;
 use App\Models\Group;
-use App\Models\User;
 use App\Services\FileService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
 
 class FileController extends Controller
 {
@@ -50,6 +47,12 @@ class FileController extends Controller
             return response()->json(['message' => 'File cannot be accepted because of naming collision'], 422);
         }
         return $fileService->accept($file);
+    }
+
+    public function show(FileInfo $file, FileService $fileService)
+    {
+        return $data = $this->$fileService->show($file->id);
+        
     }
     public function showQuery()
     {

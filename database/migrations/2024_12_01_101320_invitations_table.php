@@ -20,7 +20,6 @@ return new class extends Migration
             $table->foreign('groupId')->references('id')->on('groups')->onDelete('cascade');
             $table->timestamps();
         });
-
     }
 
     /**

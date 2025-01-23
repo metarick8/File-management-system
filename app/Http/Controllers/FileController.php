@@ -9,6 +9,7 @@ use App\Http\Requests\FileRequest;
 use App\Models\FileInfo;
 use App\Models\Group;
 use App\Services\FileService;
+use Illuminate\Support\Facades\Storage;
 
 class FileController extends Controller
 {
@@ -52,7 +53,13 @@ class FileController extends Controller
     public function show(FileInfo $file, FileService $fileService)
     {
         return $data = $this->$fileService->show($file->id);
-        
+    }
+    public function destroy(FileInfo $file)
+    {
+        $this->authorize('accept', $file);
+        if ($file->path && Storage::disk('local')->exists($file->path))
+            Storage::disk('local')->delete($file);
+        $file->delete();
     }
     public function showQuery()
     {

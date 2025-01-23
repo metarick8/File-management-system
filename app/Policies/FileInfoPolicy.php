@@ -29,4 +29,6 @@ class FileInfoPolicy
         //check if user is a member of the group ; he's uploading a file into
         return $user->members()->where('groupId', request('groupId'))->exists();
     }
+
+
 }

@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\FileInfo;
+use App\Services\FileService;
+use App\Services\FileVersionService;
+use App\Services\InvitationService;
 use App\Services\UserService;
 use App\Traits\Response;
 use Illuminate\Http\Request;
@@ -9,12 +13,10 @@ use Illuminate\Http\Request;
 class UserController extends Controller
 {
     use Response;
-
     protected $userService;
 
-    public function __construct(UserService $userService)
+    public function __construct(UserService $userService,)
     {
-        //needs handling
         $this->middleware('auth:api');
 
         $this->userService = $userService;
@@ -28,5 +30,19 @@ class UserController extends Controller
         else if ($response->isEmpty())
             return $this->success('', "User not found!");
         return $this->success($response, "User/s found");
+    }
+
+    public function notifications(InvitationService $invitationService, FileVersionService $fileVersionService, FileService $fileService)
+    {
+
+        $filesAcception = $fileService->notifications();
+        $filesInfo = $fileVersionService->notifications();
+        $invitations = $invitationService->show();
+
+        return $this->success([
+            "groupInvitations" => $invitations,
+            "fileAcceptations" => $filesAcception,
+            "filesInfor" => $filesInfo
+        ], 'Invitations for this user');
     }
 }

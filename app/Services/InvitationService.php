@@ -112,17 +112,18 @@ class InvitationService
     {
         //return $invitations = DB::table("invitations")->where([['userId', auth()->id()], ['status', "pending"]])->get();
         $invitations = DB::table("invitations")
-    ->join("users", "users.id", "=", "invitations.userId")
-    ->join("groups", "groups.id", "=", "invitations.groupId")
-    ->select(
-        'invitations.*',
-        'users.name AS userName',
-        'groups.name AS groupName'
-    )
-    ->where([['users.id', auth()->id()], ['invitations.status', "pending"]])
-    ->orderBy('invitations.created_at', 'desc')
-    ->get();
+            ->join("users", "users.id", "=", "invitations.userId")
+            ->join("groups", "groups.id", "=", "invitations.groupId")
+            ->select(
+                'invitations.id',
+                'users.name AS user',
+                'groups.name AS group',
+                'groups.id AS groupId'
+            )
+            ->where([['users.id', auth()->id()], ['invitations.status', "pending"]])
+            ->orderBy('invitations.created_at', 'desc')
+            ->get();
 
-    return $invitations;
+        return $invitations;
     }
 }

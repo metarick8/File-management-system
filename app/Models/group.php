@@ -27,10 +27,13 @@ class Group extends Model
     public function members()
     {
         return $this->belongsToMany(User::class, 'members', 'groupId', 'userId');
+<<<<<<< HEAD
     }
     public function invitations()
     {
         return $this->belongsToMany(User::class, 'invitations', 'groupId', 'userId');
+=======
+>>>>>>> test
     }
     public function file_infos()
     {

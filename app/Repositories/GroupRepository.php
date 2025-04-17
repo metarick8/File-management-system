@@ -26,18 +26,19 @@ class GroupRepository
         return $group;
     }
 
-    public function getGroups(int $id)
+    public function getAllForUser(int $id)
     {
         //return $invitations = DB::table("invitations")->where([['userId', auth()->id()], ['status', "pending"]])->get();
         return User::find($id)->members()->get();
 
         $members = DB::table("members")->where('userId', $id)->get();
         if ($members->isEmpty())
-            return $members;
+            return null;
         foreach ($members as $member)
-            $groups[] = Group::where('id', $member->groupId)->get();
+            $groups[] = Group::where('id', $member->groupId)->first();
         return $groups;
     }
+
     public function joinGroup(int $groupId)
     {
         DB::table("members")->insert([

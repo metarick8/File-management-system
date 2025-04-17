@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\InvitationService;
 use App\Traits\Response;
+use Exception;
 use Illuminate\Http\Request;
 
 class InvitationController extends Controller
@@ -26,6 +27,10 @@ class InvitationController extends Controller
     }
     public function invitationResponse(Request $request)
     {
+<<<<<<< HEAD
+=======
+    
+>>>>>>> test
         $response = $this->invitationService->invitationValidation($request->all());
         if (is_array($response))
             if ($response["code request"] != 200)
@@ -33,6 +38,7 @@ class InvitationController extends Controller
         return $this->success('', "Invitation response has been saved");
     }
 
+<<<<<<< HEAD
     public function show()
     {
         $invitations = $this->invitationService->show();
@@ -40,6 +46,16 @@ class InvitationController extends Controller
             return $this->success('', "You don't have any invitations yet");
         return $this->success([
                  "invitations" => $invitations
+=======
+    public function showInvitationsForUser()
+    {
+        //throw new Exception("run time");
+        $invitations = $this->invitationService->getInvitationsForUser();
+        if (empty($invitations))
+            return $this->success('', "You don't have any invitations yet");
+        return $this->success([
+            "invitations" => $invitations
+>>>>>>> test
         ], 'Invitations for this user');
     }
 }

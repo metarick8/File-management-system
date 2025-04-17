@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Group;
 use App\Repositories\GroupRepository;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -47,11 +48,16 @@ class GroupService
     public function getGroupsForUser()
     {
         $userId = auth()->id();
-        $groups = $this->groupRepository->getGroups($userId);
+        $groups = $this->groupRepository->getAllForUser($userId);
 
         return $groups;
     }
+<<<<<<< HEAD
     public function get(int $groupId)
+=======
+
+    public function getGroup(int $groupId)
+>>>>>>> test
     {
         $data["id"] = $groupId;
         $validator = Validator::make($data, [

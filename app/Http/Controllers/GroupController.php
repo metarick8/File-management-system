@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\GroupService;
 use App\Traits\Response;
+use Exception;
 use Illuminate\Http\Request;
 
 class GroupController extends Controller
@@ -50,11 +51,18 @@ class GroupController extends Controller
 
     public function show(int $id)
     {
+<<<<<<< HEAD
         $group = $this->groupService->get($id);
+=======
+        $group = $this->groupService->getGroup($id);
+>>>>>>> test
         if (empty($group))
             return $this->success('', "Group not found!");
         else
             return $this->success($group, "Group details:");
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> test
 }

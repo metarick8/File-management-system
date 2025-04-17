@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Group;
 use App\Models\User;
 use App\Repositories\InvitationRepository;
+use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -24,14 +25,17 @@ class InvitationService
             "members" => "required | array",
             "members.*" => "integer"
         ]);
-
+        // request()->validate(
+        //     [
+            //throw new Exception($validator->errors()->first());
+        //     ]
+        //     );
         if ($validator->fails())
             return [
                 "data" => '',
                 "message" => $validator->errors()->first(),
                 "code request" => 400
             ];
-
         $groupId = $data["groupId"];
         $group = Group::find($groupId);
 
@@ -108,6 +112,7 @@ class InvitationService
         $this->invitationRepository->accept($data["response"], $invitationRow->id, $invitationRow->groupId);
     }
 
+<<<<<<< HEAD
     public function show()
     {
         //return $invitations = DB::table("invitations")->where([['userId', auth()->id()], ['status', "pending"]])->get();
@@ -123,6 +128,12 @@ class InvitationService
             ->where([['users.id', auth()->id()], ['invitations.status', "pending"]])
             ->orderBy('invitations.created_at', 'desc')
             ->get();
+=======
+    public function getInvitationsForUser()
+    {
+        $userId = auth()->id();
+        $invitations = $this->invitationRepository->getAllForUser($userId);
+>>>>>>> test
 
         return $invitations;
     }

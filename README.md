@@ -5,3 +5,6 @@ The project idea is simple, a user can upload files on a group, after the admin 
 after the check-out proccess the file will be available to anyone to check-in it
 the problem that we solved is the concurrent access on check-in, where the file can only be checked-in by one user at a time, we had to solve that issue during this project
 We also managed to log all the operations that were done on the project -with the help of AOP design pattern-
+
+
+Note: During the execution proccess, we were working on a private GitLab repository, the project took less than 2 months -besides the other colleges' projects that we were working on at the same period-

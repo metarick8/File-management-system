@@ -25,15 +25,16 @@ class GroupRepository
         return $group;
     }
 
-    public function getGroups(int $id)
+    public function getAllForUser(int $id)
     {
         $members = DB::table("members")->where('userId', $id)->get();
         if ($members->isEmpty())
-            return $members;
+            return null;
         foreach ($members as $member)
-            $groups[] = Group::where('id', $member->groupId)->get();
+            $groups[] = Group::where('id', $member->groupId)->first();
         return $groups;
     }
+
     public function joinGroup(int $groupId)
     {
         DB::table("members")->insert([
@@ -41,6 +42,25 @@ class GroupRepository
             "groupId" => $groupId,
             "created_at" => Carbon::now(),
 
+        ]);
+    }
+    public function get(int $id)
+    {
+        $group = Group::with(['user', 'members'])->find($id);
+
+        if (empty($group))
+            return null;
+
+        $group["owner"] = $group->user->name;
+        return $group->only([
+            'id',
+            'name',
+            'owner',
+            'description',
+            'randomString',
+            'created_at',
+            'updated_at',
+            "members"
         ]);
     }
 }

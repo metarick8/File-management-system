@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Group;
 use App\Repositories\GroupRepository;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -10,10 +11,11 @@ use Illuminate\Support\Str;
 class GroupService
 {
     protected $groupRepository;
-
-    public function __construct(GroupRepository $groupRepository)
+    protected $invitationService;
+    public function __construct(GroupRepository $groupRepository, InvitationService $invitationService)
     {
         $this->groupRepository = $groupRepository;
+        $this->invitationService = $invitationService;
     }
 
     public function createGroup(array $data)
@@ -23,7 +25,6 @@ class GroupService
             'name' => 'required | string | max:255',
             "description" => 'required | string | max:255'
         ]);
-
         if ($validator->fails()) {
             //$validator->errors();
             return $validator->errors()->first();
@@ -35,14 +36,33 @@ class GroupService
         $random = Str::random(10);
         $data['random'] = $random;
         $group = $this->groupRepository->create($data);
+        $data['groupId'] = $group->id;
+        if (!empty($data["users"]))
+            if (is_array($data["users"])) {
+                $data["members"] = $data["users"];
+                $this->invitationService->invite($data);
+            }
         return $group;
     }
 
     public function getGroupsForUser()
     {
         $userId = auth()->id();
-        $groups = $this->groupRepository->getGroups($userId);
+        $groups = $this->groupRepository->getAllForUser($userId);
 
         return $groups;
+    }
+
+    public function getGroup(int $groupId)
+    {
+        $data["id"] = $groupId;
+        $validator = Validator::make($data, [
+            "id" => "required | integer",
+        ]);
+
+        if ($validator->fails())
+            return $validator->errors()->first();
+
+        return $this->groupRepository->get($groupId);
     }
 }

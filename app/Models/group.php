@@ -26,7 +26,7 @@ class Group extends Model
     }
     public function members()
     {
-        return $this->belongsToMany(User::class, 'members', 'groupId');
+        return $this->belongsToMany(User::class, 'members', 'groupId', 'userId');
     }
     public function file_infos()
     {

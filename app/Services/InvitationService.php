@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Group;
 use App\Models\User;
 use App\Repositories\InvitationRepository;
+use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -26,14 +27,17 @@ class InvitationService
             "members" => "required | array",
             "members.*" => "integer"
         ]);
-
+        // request()->validate(
+        //     [
+            //throw new Exception($validator->errors()->first());
+        //     ]
+        //     );
         if ($validator->fails())
             return [
                 "data" => '',
                 "message" => $validator->errors()->first(),
                 "code request" => 400
             ];
-
         $groupId = $data["groupId"];
         $group = Group::find($groupId);
         if (empty($group))
@@ -105,5 +109,13 @@ class InvitationService
                 "code request" => 400
             ];
         $this->invitationRepository->accept($data["response"], $invitationRow->id, $invitationRow->groupId);
+    }
+
+    public function getInvitationsForUser()
+    {
+        $userId = auth()->id();
+        $invitations = $this->invitationRepository->getAllForUser($userId);
+
+        return $invitations;
     }
 }

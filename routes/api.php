@@ -18,4 +18,6 @@ Route::controller(AuthController::class)->group(function (){
     Route::post('group/invite', [InvitationController::class, 'sendInvite']);
     Route::post('group/acceptInvite', [InvitationController::class, 'invitationResponse']);
     Route::post('user/search', [UserController::class, "search"]);
+    Route::get('group/{id}', [GroupController::class, "showGroup"]);
+    Route::get('invite/list', [InvitationController::class, 'showInvitationsForUser']);
 ///});

@@ -3,6 +3,8 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -25,7 +27,11 @@ class Handler extends ExceptionHandler
     {
         $this->reportable(function (Throwable $e) {
             //
+            Log::channel("custom")->error("Exception From AOP", [
+                "message" => $e->getMessage(),
+                "URL" => request()->fullUrl()
+            ]);
         });
     }
-    
+
 }

@@ -64,8 +64,7 @@ class InvitationRepository
     public function accept(bool $accept, int $invitationId, int $groupId)
     {
 
-        if ($accept)
-        {
+        if ($accept) {
             $response = "accepted";
             // $this->groupRepository->joinGroup($groupId);
             DB::table("members")->insert([
@@ -82,5 +81,14 @@ class InvitationRepository
                 "updated_at" => Carbon::now()
             ]);
     }
-    
+
+    public function getAllForUser(int $id)
+    {
+        return $invitations = DB::table("invitations")->where([['userId', $id], ['status', "pending"]])->get();
+        // if ($invitations->isEmpty())
+        //     return null;
+        // foreach ($invitations as $invitation)
+        //     //$invitations[] = DB::table('invitations')->where('id', $invitation->groupId)->first();
+        // return $invitations;
+    }
 }

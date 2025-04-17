@@ -16,7 +16,6 @@ Route::controller(AuthController::class)->group(function () {
     Route::get('logout', 'logout');
     Route::get('refresh', 'refresh');
 });
-<<<<<<< HEAD
 
 Route::prefix('group')->group(function () {
     Route::post('create', [GroupController::class, 'create']);
@@ -42,7 +41,6 @@ Route::get('testing', [PDFController::class, "generatePDF"]);
 
 
 
-=======
 //Route::middleware('auth:api')->group(function () {
     Route::post('group/create', [GroupController::class, 'create']);
     Route::get('group/list', [GroupController::class, 'showGroupsForUser']);
@@ -52,4 +50,3 @@ Route::get('testing', [PDFController::class, "generatePDF"]);
     Route::get('group/{id}', [GroupController::class, "showGroup"]);
     Route::get('invite/list', [InvitationController::class, 'showInvitationsForUser']);
 ///});
->>>>>>> test
